@@ -47,7 +47,7 @@
 					"waitOnCompletion": true,
 					"parameters": {
 						"p_window_end_date": {
-							"value": "@formatDateTime(pipeline().parameters.p_start_date, 'yyy-MM-DD')",
+							"value": "@formatDateTime(pipeline().parameters.p_start_date, 'yyy-MM-dd')",
 							"type": "Expression"
 						}
 					}
