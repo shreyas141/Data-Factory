@@ -1,0 +1,64 @@
+{
+	"name": "pl_data_process",
+	"properties": {
+		"activities": [
+			{
+				"name": "ingest data exe",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_data_ingestion",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"p_window_end_date": {
+							"value": "@formatDateTime(pipeline().parameters.p_start_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "data transformation exe",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ingest data exe",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_data_transfromation",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"p_window_end_date": {
+							"value": "@formatDateTime(pipeline().parameters.p_start_date, 'yyy-MM-DD')",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"p_start_date": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	}
+}
