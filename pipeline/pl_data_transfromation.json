@@ -1,0 +1,105 @@
+{
+	"name": "pl_data_transfromation",
+	"properties": {
+		"activities": [
+			{
+				"name": "act_race_resuts_trans",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/formula1-project2/transformations/1.Races_Results",
+					"baseParameters": {
+						"p_file_date": {
+							"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_workspace",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "act_driver_standing_trans",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "act_race_resuts_trans",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/formula1-project2/transformations/2.Driver_Standing",
+					"baseParameters": {
+						"p_file_date": {
+							"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_workspace",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "act_constructor_standing_trans",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "act_race_resuts_trans",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/formula1-project2/transformations/3.Constructor_standings",
+					"baseParameters": {
+						"p_file_date": {
+							"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_workspace",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"p_window_end_date": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	}
+}
