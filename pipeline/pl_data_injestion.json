@@ -1,0 +1,49 @@
+{
+	"name": "pl_data_injestion",
+	"properties": {
+		"activities": [
+			{
+				"name": "Notebook1",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/formula1-project2/injestion/1.Injest_all_files",
+					"baseParameters": {
+						"data_source": {
+							"value": "@variables('v_data_source')",
+							"type": "Expression"
+						},
+						"file_date": {
+							"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_workspace",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"p_window_end_date": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"v_data_source": {
+				"type": "String",
+				"defaultValue": "ErgastAPI"
+			}
+		},
+		"annotations": []
+	}
+}
