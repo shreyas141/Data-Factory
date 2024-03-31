@@ -78,66 +78,6 @@
 										"referenceName": "ls_databricks_workspace",
 										"type": "LinkedServiceReference"
 									}
-								},
-								{
-									"name": "act_pit_stop_data_ingestion",
-									"type": "DatabricksNotebook",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"notebookPath": "/formula1-project2/injestion/pitstop_data_injestion",
-										"baseParameters": {
-											"file_date": {
-												"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
-												"type": "Expression"
-											},
-											"data_source": {
-												"value": "@variables('v_data_source')",
-												"type": "Expression"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "ls_databricks_workspace",
-										"type": "LinkedServiceReference"
-									}
-								},
-								{
-									"name": "act_lap_times_data_ingestion",
-									"type": "DatabricksNotebook",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"notebookPath": "/formula1-project2/injestion/lap_times_data_injestion",
-										"baseParameters": {
-											"file_date": {
-												"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
-												"type": "Expression"
-											},
-											"data_source": {
-												"value": "@variables('v_data_source')",
-												"type": "Expression"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "ls_databricks_workspace",
-										"type": "LinkedServiceReference"
-									}
 								}
 							]
 						}
@@ -265,6 +205,192 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_data_transfromation')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "act_race_resuts_trans",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/formula1-project2/transformations/1.Races_Results",
+							"baseParameters": {
+								"p_file_date": {
+									"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_databricks_workspace",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "act_driver_standing_trans",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "act_race_resuts_trans",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/formula1-project2/transformations/2.Driver_Standing",
+							"baseParameters": {
+								"p_file_date": {
+									"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_databricks_workspace",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "act_constructor_standing_trans",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "act_race_resuts_trans",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/formula1-project2/transformations/3.Constructor_standings",
+							"baseParameters": {
+								"p_file_date": {
+									"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_databricks_workspace",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"p_window_end_date": {
+						"type": "string"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_databricks_workspace')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_data_process')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ingest data exe",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_data_ingestion",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"p_window_end_date": {
+									"value": "@formatDateTime(pipeline().parameters.p_start_date, 'yyy-MM-dd')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "data transformation exe",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ingest data exe",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_data_transfromation",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"p_window_end_date": {
+									"value": "@formatDateTime(pipeline().parameters.p_start_date, 'yyy-MM-dd')",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"p_start_date": {
+						"type": "string"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_data_ingestion')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_data_transfromation')]"
+			]
 		}
 	]
 }
