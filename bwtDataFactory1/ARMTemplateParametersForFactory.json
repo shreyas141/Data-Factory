@@ -5,8 +5,14 @@
 		"factoryName": {
 			"value": "bwtDataFactory1"
 		},
+		"ls_datalake_storage_bwtpractice_accountKey": {
+			"value": ""
+		},
 		"ls_databricks_workspace_properties_typeProperties_existingClusterId": {
 			"value": "0320-040731-i7n463r9"
+		},
+		"ls_datalake_storage_bwtpractice_properties_typeProperties_url": {
+			"value": "https://bwtpractice.dfs.core.windows.net/"
 		}
 	}
 }

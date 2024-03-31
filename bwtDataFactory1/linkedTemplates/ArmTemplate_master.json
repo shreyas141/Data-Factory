@@ -7,9 +7,17 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "bwtDataFactory1"
 		},
+		"ls_datalake_storage_bwtpractice_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_datalake_storage_bwtpractice'"
+		},
 		"ls_databricks_workspace_properties_typeProperties_existingClusterId": {
 			"type": "string",
 			"defaultValue": "0320-040731-i7n463r9"
+		},
+		"ls_datalake_storage_bwtpractice_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://bwtpractice.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"type": "string",
@@ -38,8 +46,14 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"ls_datalake_storage_bwtpractice_accountKey": {
+						"value": "[parameters('ls_datalake_storage_bwtpractice_accountKey')]"
+					},
 					"ls_databricks_workspace_properties_typeProperties_existingClusterId": {
 						"value": "[parameters('ls_databricks_workspace_properties_typeProperties_existingClusterId')]"
+					},
+					"ls_datalake_storage_bwtpractice_properties_typeProperties_url": {
+						"value": "[parameters('ls_datalake_storage_bwtpractice_properties_typeProperties_url')]"
 					}
 				}
 			},

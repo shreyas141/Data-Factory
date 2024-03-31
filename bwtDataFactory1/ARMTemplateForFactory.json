@@ -7,9 +7,17 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "bwtDataFactory1"
 		},
+		"ls_datalake_storage_bwtpractice_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_datalake_storage_bwtpractice'"
+		},
 		"ls_databricks_workspace_properties_typeProperties_existingClusterId": {
 			"type": "string",
 			"defaultValue": "0320-040731-i7n463r9"
+		},
+		"ls_datalake_storage_bwtpractice_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://bwtpractice.dfs.core.windows.net/"
 		}
 	},
 	"variables": {
@@ -23,39 +31,120 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "act_ingest_data",
-						"description": "This notebook injest data of circuits, qualifying, constructor, results, races, drivers, qualifying.",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
+						"name": "act_If_folder_exists",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "act_get_metadata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/formula1-project2/injestion/1.Injest_all_files",
-							"baseParameters": {
-								"data_source": {
-									"value": "@variables('v_data_source')",
-									"type": "Expression"
+							"expression": {
+								"value": "@activity('act_get_metadata').output.exists",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "act_ingest_data",
+									"description": "This notebook injest data of circuits, qualifying, constructor, results, races, drivers, qualifying.",
+									"type": "DatabricksNotebook",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"notebookPath": "/formula1-project2/injestion/1.Injest_all_files",
+										"baseParameters": {
+											"data_source": {
+												"value": "@variables('v_data_source')",
+												"type": "Expression"
+											},
+											"file_date": {
+												"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
+												"type": "Expression"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "ls_databricks_workspace",
+										"type": "LinkedServiceReference"
+									}
 								},
-								"file_date": {
-									"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
-									"type": "Expression"
+								{
+									"name": "act_pit_stop_data_ingestion",
+									"type": "DatabricksNotebook",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"notebookPath": "/formula1-project2/injestion/pitstop_data_injestion",
+										"baseParameters": {
+											"file_date": {
+												"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
+												"type": "Expression"
+											},
+											"data_source": {
+												"value": "@variables('v_data_source')",
+												"type": "Expression"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "ls_databricks_workspace",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "act_lap_times_data_ingestion",
+									"type": "DatabricksNotebook",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"notebookPath": "/formula1-project2/injestion/lap_times_data_injestion",
+										"baseParameters": {
+											"file_date": {
+												"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
+												"type": "Expression"
+											},
+											"data_source": {
+												"value": "@variables('v_data_source')",
+												"type": "Expression"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "ls_databricks_workspace",
+										"type": "LinkedServiceReference"
+									}
 								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_databricks_workspace",
-							"type": "LinkedServiceReference"
+							]
 						}
 					},
 					{
-						"name": "act_pit_stop_data_ingestion",
-						"type": "DatabricksNotebook",
+						"name": "act_get_metadata",
+						"type": "GetMetadata",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -66,51 +155,27 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/formula1-project2/injestion/pitstop_data_injestion",
-							"baseParameters": {
-								"file_date": {
-									"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
-									"type": "Expression"
-								},
-								"data_source": {
-									"value": "@variables('v_data_source')",
-									"type": "Expression"
+							"dataset": {
+								"referenceName": "ls_bwtpractice_data_lake",
+								"type": "DatasetReference",
+								"parameters": {
+									"p_window_start_date": {
+										"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
+										"type": "Expression"
+									}
 								}
+							},
+							"fieldList": [
+								"exists"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "BinaryReadSettings"
 							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_databricks_workspace",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "act_lap_times_data_ingestion",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/formula1-project2/injestion/lap_times_data_injestion",
-							"baseParameters": {
-								"file_date": {
-									"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
-									"type": "Expression"
-								},
-								"data_source": {
-									"value": "@variables('v_data_source')",
-									"type": "Expression"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_databricks_workspace",
-							"type": "LinkedServiceReference"
 						}
 					}
 				],
@@ -131,7 +196,40 @@
 				"annotations": []
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ls_bwtpractice_data_lake')]",
 				"[concat(variables('factoryId'), '/linkedServices/ls_databricks_workspace')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_bwtpractice_data_lake')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_datalake_storage_bwtpractice",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"p_window_start_date": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@formatDateTime(dataset().p_window_start_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						},
+						"folderPath": "incremental_files",
+						"fileSystem": "raw"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_datalake_storage_bwtpractice')]"
 			]
 		},
 		{
@@ -147,6 +245,23 @@
 					"authentication": "MSI",
 					"workspaceResourceId": "/subscriptions/ecd1743b-4909-4d75-8c4c-54480d1e2d6f/resourceGroups/brainworks-practice/providers/Microsoft.Databricks/workspaces/bwt_databricks_ws",
 					"existingClusterId": "[parameters('ls_databricks_workspace_properties_typeProperties_existingClusterId')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_datalake_storage_bwtpractice')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('ls_datalake_storage_bwtpractice_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('ls_datalake_storage_bwtpractice_accountKey')]"
+					}
 				}
 			},
 			"dependsOn": []
