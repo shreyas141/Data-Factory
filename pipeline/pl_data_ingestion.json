@@ -50,66 +50,6 @@
 								"referenceName": "ls_databricks_workspace",
 								"type": "LinkedServiceReference"
 							}
-						},
-						{
-							"name": "act_pit_stop_data_ingestion",
-							"type": "DatabricksNotebook",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"notebookPath": "/formula1-project2/injestion/pitstop_data_injestion",
-								"baseParameters": {
-									"file_date": {
-										"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
-										"type": "Expression"
-									},
-									"data_source": {
-										"value": "@variables('v_data_source')",
-										"type": "Expression"
-									}
-								}
-							},
-							"linkedServiceName": {
-								"referenceName": "ls_databricks_workspace",
-								"type": "LinkedServiceReference"
-							}
-						},
-						{
-							"name": "act_lap_times_data_ingestion",
-							"type": "DatabricksNotebook",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"notebookPath": "/formula1-project2/injestion/lap_times_data_injestion",
-								"baseParameters": {
-									"file_date": {
-										"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
-										"type": "Expression"
-									},
-									"data_source": {
-										"value": "@variables('v_data_source')",
-										"type": "Expression"
-									}
-								}
-							},
-							"linkedServiceName": {
-								"referenceName": "ls_databricks_workspace",
-								"type": "LinkedServiceReference"
-							}
 						}
 					]
 				}
@@ -142,6 +82,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
