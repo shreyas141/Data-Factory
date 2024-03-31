@@ -1,0 +1,155 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "bwtDataFactory1"
+		},
+		"ls_databricks_workspace_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0320-040731-i7n463r9"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_data_ingestion')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "act_ingest_data",
+						"description": "This notebook injest data of circuits, qualifying, constructor, results, races, drivers, qualifying.",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/formula1-project2/injestion/1.Injest_all_files",
+							"baseParameters": {
+								"data_source": {
+									"value": "@variables('v_data_source')",
+									"type": "Expression"
+								},
+								"file_date": {
+									"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_databricks_workspace",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "act_pit_stop_data_ingestion",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/formula1-project2/injestion/pitstop_data_injestion",
+							"baseParameters": {
+								"file_date": {
+									"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
+									"type": "Expression"
+								},
+								"data_source": {
+									"value": "@variables('v_data_source')",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_databricks_workspace",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "act_lap_times_data_ingestion",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/formula1-project2/injestion/lap_times_data_injestion",
+							"baseParameters": {
+								"file_date": {
+									"value": "@formatDateTime(pipeline().parameters.p_window_end_date, 'yyy-MM-dd')",
+									"type": "Expression"
+								},
+								"data_source": {
+									"value": "@variables('v_data_source')",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_databricks_workspace",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"p_window_end_date": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"v_data_source": {
+						"type": "String",
+						"defaultValue": "ErgastAPI"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_databricks_workspace')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_databricks_workspace')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "This linked service creates a link with databricks ws",
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-5181963175249541.1.azuredatabricks.net",
+					"authentication": "MSI",
+					"workspaceResourceId": "/subscriptions/ecd1743b-4909-4d75-8c4c-54480d1e2d6f/resourceGroups/brainworks-practice/providers/Microsoft.Databricks/workspaces/bwt_databricks_ws",
+					"existingClusterId": "[parameters('ls_databricks_workspace_properties_typeProperties_existingClusterId')]"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

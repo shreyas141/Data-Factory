@@ -1,0 +1,12 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "bwtDataFactory1"
+		},
+		"ls_databricks_workspace_properties_typeProperties_existingClusterId": {
+			"value": "0320-040731-i7n463r9"
+		}
+	}
+}
