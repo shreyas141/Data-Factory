@@ -1,0 +1,27 @@
+{
+	"name": "ls_bwtpractice_data_lake",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_datalake_storage_bwtpractice",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"p_window_start_date": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@formatDateTime(dataset().p_window_start_date, 'yyy-MM-dd')",
+					"type": "Expression"
+				},
+				"folderPath": "incremental_files",
+				"fileSystem": "raw"
+			}
+		}
+	}
+}
