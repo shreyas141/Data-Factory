@@ -2,7 +2,16 @@
 	"name": "tr_processes_formula1_data",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
+		"pipeline": {
+			"pipelineReference": {
+				"referenceName": "pl_data_process",
+				"type": "PipelineReference"
+			},
+			"parameters": {
+				"p_start_date": "@trigger.output.window.EndTime"
+			}
+		},
 		"type": "TumblingWindowTrigger",
 		"typeProperties": {
 			"frequency": "Hour",
