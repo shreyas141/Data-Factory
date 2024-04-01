@@ -18,6 +18,10 @@
 		"ls_datalake_storage_bwtpractice_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://bwtpractice.dfs.core.windows.net/"
+		},
+		"tr_processes_formula1_data_properties_pipeline_parameters_p_start_date": {
+			"type": "string",
+			"defaultValue": "@trigger.output.window.EndTime"
 		}
 	},
 	"variables": {
@@ -141,70 +145,77 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ls_bwtpractice_data_lake')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/pl_data_process')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_datalake_storage_bwtpractice",
-					"type": "LinkedServiceReference"
+				"activities": [
+					{
+						"name": "ingest data exe",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_data_ingestion",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"p_window_end_date": {
+									"value": "@formatDateTime(pipeline().parameters.p_start_date, 'yyy-MM-dd')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "data transformation exe",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ingest data exe",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_data_transfromation",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"p_window_end_date": {
+									"value": "@formatDateTime(pipeline().parameters.p_start_date, 'yyy-MM-dd')",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
 				},
 				"parameters": {
-					"p_window_start_date": {
+					"p_start_date": {
 						"type": "string"
 					}
 				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@formatDateTime(dataset().p_window_start_date, 'yyy-MM-dd')",
-							"type": "Expression"
-						},
-						"folderPath": "incremental_files",
-						"fileSystem": "raw"
-					}
-				}
+				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_datalake_storage_bwtpractice')]"
+				"[concat(variables('factoryId'), '/pipelines/pl_data_ingestion')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_data_transfromation')]"
 			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ls_databricks_workspace')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "This linked service creates a link with databricks ws",
-				"annotations": [],
-				"type": "AzureDatabricks",
-				"typeProperties": {
-					"domain": "https://adb-5181963175249541.1.azuredatabricks.net",
-					"authentication": "MSI",
-					"workspaceResourceId": "/subscriptions/ecd1743b-4909-4d75-8c4c-54480d1e2d6f/resourceGroups/brainworks-practice/providers/Microsoft.Databricks/workspaces/bwt_databricks_ws",
-					"existingClusterId": "[parameters('ls_databricks_workspace_properties_typeProperties_existingClusterId')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ls_datalake_storage_bwtpractice')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('ls_datalake_storage_bwtpractice_properties_typeProperties_url')]",
-					"accountKey": {
-						"type": "SecureString",
-						"value": "[parameters('ls_datalake_storage_bwtpractice_accountKey')]"
-					}
-				}
-			},
-			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/pl_data_transfromation')]",
@@ -320,76 +331,103 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_data_process')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
+			"name": "[concat(parameters('factoryName'), '/ls_bwtpractice_data_lake')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"activities": [
-					{
-						"name": "ingest data exe",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_data_ingestion",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"p_window_end_date": {
-									"value": "@formatDateTime(pipeline().parameters.p_start_date, 'yyy-MM-dd')",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "data transformation exe",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ingest data exe",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_data_transfromation",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"p_window_end_date": {
-									"value": "@formatDateTime(pipeline().parameters.p_start_date, 'yyy-MM-dd')",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
+				"linkedServiceName": {
+					"referenceName": "ls_datalake_storage_bwtpractice",
+					"type": "LinkedServiceReference"
 				},
 				"parameters": {
-					"p_start_date": {
+					"p_window_start_date": {
 						"type": "string"
 					}
 				},
-				"annotations": []
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@formatDateTime(dataset().p_window_start_date, 'yyy-MM-dd')",
+							"type": "Expression"
+						},
+						"folderPath": "incremental_files",
+						"fileSystem": "raw"
+					}
+				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_data_ingestion')]",
-				"[concat(variables('factoryId'), '/pipelines/pl_data_transfromation')]"
+				"[concat(variables('factoryId'), '/linkedServices/ls_datalake_storage_bwtpractice')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_databricks_workspace')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "This linked service creates a link with databricks ws",
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-5181963175249541.1.azuredatabricks.net",
+					"authentication": "MSI",
+					"workspaceResourceId": "/subscriptions/ecd1743b-4909-4d75-8c4c-54480d1e2d6f/resourceGroups/brainworks-practice/providers/Microsoft.Databricks/workspaces/bwt_databricks_ws",
+					"existingClusterId": "[parameters('ls_databricks_workspace_properties_typeProperties_existingClusterId')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_datalake_storage_bwtpractice')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('ls_datalake_storage_bwtpractice_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('ls_datalake_storage_bwtpractice_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tr_processes_formula1_data')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipeline": {
+					"pipelineReference": {
+						"referenceName": "pl_data_process",
+						"type": "PipelineReference"
+					},
+					"parameters": {
+						"p_start_date": "[parameters('tr_processes_formula1_data_properties_pipeline_parameters_p_start_date')]"
+					}
+				},
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 168,
+					"startTime": "2021-03-14T10:00:00Z",
+					"endTime": "2021-04-25T10:00:00Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 1,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": []
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_data_process')]"
 			]
 		}
 	]
