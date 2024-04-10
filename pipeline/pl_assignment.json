@@ -102,6 +102,8 @@
 						{
 							"name": "Copy data2",
 							"type": "Copy",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "act_set_var",
@@ -177,7 +179,7 @@
 							"typeProperties": {
 								"variableName": "year",
 								"value": {
-									"value": "@item().season",
+									"value": "@item().season.value",
 									"type": "Expression"
 								}
 							}
@@ -195,6 +197,9 @@
 			},
 			"year": {
 				"type": "String"
+			},
+			"year2": {
+				"type": "Array"
 			}
 		},
 		"annotations": []
