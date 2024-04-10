@@ -134,31 +134,11 @@
 					},
 					"activities": [
 						{
-							"name": "Web1",
-							"type": "WebActivity",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"method": "GET",
-								"url": {
-									"value": "concat('http://ergast.com/api/f1/', item().season, '.json')",
-									"type": "Expression"
-								}
-							}
-						},
-						{
 							"name": "Set variable1",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Web1",
+									"activity": "Lookup2",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -172,7 +152,7 @@
 							"typeProperties": {
 								"variableName": "v1",
 								"value": {
-									"value": "@{activity('Web1').output.MRData.SeasonsTable.Seasons}",
+									"value": "@activity('Lookup1').output",
 									"type": "Expression"
 								}
 							}
@@ -180,6 +160,8 @@
 						{
 							"name": "Copy data2",
 							"type": "Copy",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Set variable1",
@@ -246,6 +228,41 @@
 									}
 								}
 							]
+						},
+						{
+							"name": "Lookup2",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"dataset": {
+									"referenceName": "ds_http_f1",
+									"type": "DatasetReference",
+									"parameters": {
+										"year": {
+											"value": "@item().season",
+											"type": "Expression"
+										}
+									}
+								}
+							}
 						}
 					]
 				}
