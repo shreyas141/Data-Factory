@@ -102,14 +102,7 @@
 						{
 							"name": "Copy data2",
 							"type": "Copy",
-							"dependsOn": [
-								{
-									"activity": "act_set_var",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -146,7 +139,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"year": {
-											"value": "@variables('year').value",
+											"value": "@item().season.value",
 											"type": "Expression"
 										}
 									}
@@ -158,29 +151,12 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"year": {
-											"value": "@variables('year').value",
+											"value": "@item().season.value",
 											"type": "Expression"
 										}
 									}
 								}
 							]
-						},
-						{
-							"name": "act_set_var",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "year",
-								"value": {
-									"value": "@item().season",
-									"type": "Expression"
-								}
-							}
 						}
 					]
 				}
