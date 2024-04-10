@@ -5,17 +5,13 @@
 			"referenceName": "ls_datalake_storage_bwtpractice",
 			"type": "LinkedServiceReference"
 		},
-		"parameters": {
-			"year": {
-				"type": "String"
-			}
-		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"folderPath": "eargst",
+				"fileName": "seasons.json",
+				"folderPath": "eargst/seasons",
 				"fileSystem": "raw"
 			}
 		},

@@ -3,11 +3,16 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "Copy season",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Validation",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -52,9 +57,16 @@
 				]
 			},
 			{
-				"name": "Lookup1",
+				"name": "Lookup_season_file",
 				"type": "Lookup",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Copy season",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -82,11 +94,11 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "ForEach",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Lookup1",
+						"activity": "Lookup_season_file",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -95,55 +107,14 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Lookup1').output.firstRow.MRData.SeasonTable.Seasons",
+						"value": "@activity('Lookup_season_file').output.firstRow.MRData.SeasonTable.Seasons",
 						"type": "Expression"
 					},
 					"activities": [
 						{
-							"name": "Append variable1",
-							"type": "AppendVariable",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "y_list",
-								"value": {
-									"value": "@item().season",
-									"type": "Expression"
-								}
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "ForEach2",
-				"type": "ForEach",
-				"dependsOn": [
-					{
-						"activity": "ForEach1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"items": {
-						"value": "@variables('y_list')",
-						"type": "Expression"
-					},
-					"activities": [
-						{
-							"name": "Copy data2",
+							"name": "Copy_f1",
 							"type": "Copy",
-							"dependsOn": [
-								{
-									"activity": "Set variable1",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -173,9 +144,12 @@
 									}
 								},
 								"sink": {
-									"type": "BinarySink",
+									"type": "JsonSink",
 									"storeSettings": {
 										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
 									}
 								},
 								"enableStaging": false
@@ -186,7 +160,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"year": {
-											"value": "@item()",
+											"value": "@item().season",
 											"type": "Expression"
 										}
 									}
@@ -194,66 +168,32 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "ds_fone_files",
+									"referenceName": "ds_f1_files",
 									"type": "DatasetReference",
 									"parameters": {
 										"year": {
-											"value": "@item()",
+											"value": "@item().season",
 											"type": "Expression"
 										}
 									}
 								}
 							]
-						},
-						{
-							"name": "Web1",
-							"type": "WebActivity",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"method": "GET",
-								"url": {
-									"value": "@concat('http://ergast.com/api/f1/',item(),'.json')",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Set variable1",
-							"type": "SetVariable",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
-							"dependsOn": [
-								{
-									"activity": "Web1",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "v1",
-								"value": {
-									"value": "@{activity('Web1').output.MRData.RaceTable}",
-									"type": "Expression"
-								}
-							}
 						}
 					]
+				}
+			},
+			{
+				"name": "Validation",
+				"type": "Validation",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_bwtpractice_g2",
+						"type": "DatasetReference"
+					},
+					"timeout": "0.00:00:10",
+					"sleep": 10
 				}
 			}
 		],
