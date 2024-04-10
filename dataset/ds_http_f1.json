@@ -16,7 +16,7 @@
 			"location": {
 				"type": "HttpServerLocation",
 				"relativeUrl": {
-					"value": "@concat('/api/f1/', dataset().year, '.json')",
+					"value": "@concat('api/f1/', dataset().year, '.json')",
 					"type": "Expression"
 				}
 			},
