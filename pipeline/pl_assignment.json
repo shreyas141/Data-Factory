@@ -128,6 +128,10 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"items": {
+						"value": "@variables('y_list')",
+						"type": "Expression"
+					},
 					"activities": [
 						{
 							"name": "Copy data2",
@@ -161,38 +165,40 @@
 										}
 									],
 									"storeSettings": {
-										"type": "AzureBlobFSReadSettings",
-										"recursive": true,
-										"enablePartitionDiscovery": false
+										"type": "HttpReadSettings",
+										"requestMethod": "GET"
 									},
 									"formatSettings": {
 										"type": "DelimitedTextReadSettings"
 									}
 								},
 								"sink": {
-									"type": "JsonSink",
+									"type": "BinarySink",
 									"storeSettings": {
 										"type": "AzureBlobFSWriteSettings"
-									},
-									"formatSettings": {
-										"type": "JsonWriteSettings"
 									}
 								},
 								"enableStaging": false
 							},
 							"inputs": [
 								{
-									"referenceName": "ds_temp_file",
-									"type": "DatasetReference"
+									"referenceName": "ds_http_f1",
+									"type": "DatasetReference",
+									"parameters": {
+										"year": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
 								}
 							],
 							"outputs": [
 								{
-									"referenceName": "ds_f1_files",
+									"referenceName": "ds_fone_files",
 									"type": "DatasetReference",
 									"parameters": {
 										"year": {
-											"value": "@item().season",
+											"value": "@item()",
 											"type": "Expression"
 										}
 									}
@@ -202,6 +208,8 @@
 						{
 							"name": "Web1",
 							"type": "WebActivity",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
@@ -213,12 +221,17 @@
 							"userProperties": [],
 							"typeProperties": {
 								"method": "GET",
-								"url": "@concat('http://ergast.com/api/f1/',item(),'.json')"
+								"url": {
+									"value": "@concat('http://ergast.com/api/f1/',item(),'.json')",
+									"type": "Expression"
+								}
 							}
 						},
 						{
 							"name": "Set variable1",
 							"type": "SetVariable",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Web1",
