@@ -14,6 +14,12 @@
 		"ls_datalake_storage_bwtpractice_properties_typeProperties_url": {
 			"value": "https://bwtpractice.dfs.core.windows.net/"
 		},
+		"ls_f1_properties_typeProperties_url": {
+			"value": "http://ergast.com/"
+		},
+		"ls_http_eargast_seasons_properties_typeProperties_url": {
+			"value": "http://ergast.com/"
+		},
 		"tr_processes_formula1_data_properties_pipeline_parameters_p_start_date": {
 			"value": "@trigger.output.window.EndTime"
 		}

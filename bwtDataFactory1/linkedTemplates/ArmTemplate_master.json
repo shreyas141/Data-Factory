@@ -19,6 +19,14 @@
 			"type": "string",
 			"defaultValue": "https://bwtpractice.dfs.core.windows.net/"
 		},
+		"ls_f1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "http://ergast.com/"
+		},
+		"ls_http_eargast_seasons_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "http://ergast.com/"
+		},
 		"tr_processes_formula1_data_properties_pipeline_parameters_p_start_date": {
 			"type": "string",
 			"defaultValue": "@trigger.output.window.EndTime"
@@ -58,6 +66,12 @@
 					},
 					"ls_datalake_storage_bwtpractice_properties_typeProperties_url": {
 						"value": "[parameters('ls_datalake_storage_bwtpractice_properties_typeProperties_url')]"
+					},
+					"ls_f1_properties_typeProperties_url": {
+						"value": "[parameters('ls_f1_properties_typeProperties_url')]"
+					},
+					"ls_http_eargast_seasons_properties_typeProperties_url": {
+						"value": "[parameters('ls_http_eargast_seasons_properties_typeProperties_url')]"
 					},
 					"tr_processes_formula1_data_properties_pipeline_parameters_p_start_date": {
 						"value": "[parameters('tr_processes_formula1_data_properties_pipeline_parameters_p_start_date')]"
