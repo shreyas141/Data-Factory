@@ -100,9 +100,94 @@
 					},
 					"activities": [
 						{
+							"name": "Append variable1",
+							"type": "AppendVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "y_list",
+								"value": {
+									"value": "@item().season",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "ForEach2",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('y_list')",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Web1",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "GET",
+								"url": {
+									"value": "concat('http://ergast.com/api/f1/', item().season, '.json')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set variable1",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Web1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "v1",
+								"value": {
+									"value": "@{activity('Web1').output.MRData.SeasonsTable.Seasons}",
+									"type": "Expression"
+								}
+							}
+						},
+						{
 							"name": "Copy data2",
 							"type": "Copy",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "Set variable1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -114,9 +199,19 @@
 							"typeProperties": {
 								"source": {
 									"type": "DelimitedTextSource",
+									"additionalColumns": [
+										{
+											"name": "my_clm",
+											"value": {
+												"value": "@variables('v1')",
+												"type": "Expression"
+											}
+										}
+									],
 									"storeSettings": {
-										"type": "HttpReadSettings",
-										"requestMethod": "GET"
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
 									},
 									"formatSettings": {
 										"type": "DelimitedTextReadSettings"
@@ -135,14 +230,8 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "ds_http_f1",
-									"type": "DatasetReference",
-									"parameters": {
-										"year": {
-											"value": "@string(item().season)",
-											"type": "Expression"
-										}
-									}
+									"referenceName": "ds_temp_file",
+									"type": "DatasetReference"
 								}
 							],
 							"outputs": [
@@ -163,17 +252,11 @@
 			}
 		],
 		"variables": {
-			"year_list": {
+			"y_list": {
 				"type": "Array"
 			},
-			"samp": {
+			"v1": {
 				"type": "String"
-			},
-			"year": {
-				"type": "String"
-			},
-			"year2": {
-				"type": "Array"
 			}
 		},
 		"annotations": []

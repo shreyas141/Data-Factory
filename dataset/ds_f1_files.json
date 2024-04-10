@@ -15,10 +15,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": {
-					"value": "@concat(dataset().year, '.json')",
-					"type": "Expression"
-				},
 				"folderPath": "Formu;a1",
 				"fileSystem": "raw"
 			}
