@@ -19,7 +19,7 @@
 					"value": "@concat(dataset().year, '.json')",
 					"type": "Expression"
 				},
-				"folderPath": "eargst/f1",
+				"folderPath": "eargst",
 				"fileSystem": "raw"
 			}
 		},
