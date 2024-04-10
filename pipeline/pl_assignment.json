@@ -128,17 +128,18 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"items": {
-						"value": "@variables('y_list')",
-						"type": "Expression"
-					},
 					"activities": [
 						{
 							"name": "Copy data2",
 							"type": "Copy",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "Set variable1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -199,8 +200,8 @@
 							]
 						},
 						{
-							"name": "Lookup2",
-							"type": "Lookup",
+							"name": "Web1",
+							"type": "WebActivity",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
@@ -211,26 +212,31 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"source": {
-									"type": "DelimitedTextSource",
-									"storeSettings": {
-										"type": "HttpReadSettings",
-										"requestMethod": "GET",
-										"requestTimeout": ""
-									},
-									"formatSettings": {
-										"type": "DelimitedTextReadSettings"
-									}
-								},
-								"dataset": {
-									"referenceName": "ds_http_f1",
-									"type": "DatasetReference",
-									"parameters": {
-										"year": {
-											"value": "@item().season",
-											"type": "Expression"
-										}
-									}
+								"method": "GET",
+								"url": "@concat('http://ergast.com/api/f1/',item(),'.json')"
+							}
+						},
+						{
+							"name": "Set variable1",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Web1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "v1",
+								"value": {
+									"value": "@{activity('Web1').output.MRData.RaceTable}",
+									"type": "Expression"
 								}
 							}
 						}
