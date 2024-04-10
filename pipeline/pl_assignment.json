@@ -148,7 +148,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"year": {
-											"value": "@variables('year')",
+											"value": "@variables('year').value",
 											"type": "Expression"
 										}
 									}
@@ -160,7 +160,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"year": {
-											"value": "@variables('year')",
+											"value": "@variables('year').value",
 											"type": "Expression"
 										}
 									}
@@ -179,7 +179,7 @@
 							"typeProperties": {
 								"variableName": "year",
 								"value": {
-									"value": "@item().season.value",
+									"value": "@item().season",
 									"type": "Expression"
 								}
 							}
