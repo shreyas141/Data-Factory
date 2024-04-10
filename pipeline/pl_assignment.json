@@ -139,7 +139,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"year": {
-											"value": "@item().season.value",
+											"value": "@string(item().season)",
 											"type": "Expression"
 										}
 									}
@@ -147,11 +147,11 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "ds_bwtpractice_g2",
+									"referenceName": "ds_f1_files",
 									"type": "DatasetReference",
 									"parameters": {
 										"year": {
-											"value": "@item().season.value",
+											"value": "@item().season",
 											"type": "Expression"
 										}
 									}
