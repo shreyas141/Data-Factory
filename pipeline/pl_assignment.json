@@ -45,12 +45,6 @@
 					},
 					"enableStaging": false
 				},
-				"inputs": [
-					{
-						"referenceName": "ds_http_ergast_seasons",
-						"type": "DatasetReference"
-					}
-				],
 				"outputs": [
 					{
 						"referenceName": "ds_bwtpractice_g2",
@@ -159,31 +153,7 @@
 									}
 								},
 								"enableStaging": false
-							},
-							"inputs": [
-								{
-									"referenceName": "ds_http_ergast_races",
-									"type": "DatasetReference",
-									"parameters": {
-										"year": {
-											"value": "@item().season",
-											"type": "Expression"
-										}
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "ds_f1_races_files",
-									"type": "DatasetReference",
-									"parameters": {
-										"year": {
-											"value": "@item().season",
-											"type": "Expression"
-										}
-									}
-								}
-							]
+							}
 						}
 					]
 				}
@@ -210,6 +180,9 @@
 				"type": "Array"
 			},
 			"v1": {
+				"type": "String"
+			},
+			"sample": {
 				"type": "String"
 			}
 		},
