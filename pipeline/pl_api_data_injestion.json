@@ -5,6 +5,8 @@
 			{
 				"name": "Copy_api_data",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -77,15 +79,16 @@
 					"source": {
 						"type": "JsonSource",
 						"storeSettings": {
-							"type": "HttpReadSettings",
-							"requestMethod": "GET"
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
 							"type": "JsonReadSettings"
 						}
 					},
 					"dataset": {
-						"referenceName": "ds_api_bronze_data",
+						"referenceName": "ds_season_file",
 						"type": "DatasetReference"
 					}
 				}
