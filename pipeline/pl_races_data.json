@@ -183,7 +183,7 @@
 							"typeProperties": {
 								"variableName": "web_op",
 								"value": {
-									"value": "@{activity('Web_races_data').output.MRData}",
+									"value": "@{activity('Web_races_data').output}",
 									"type": "Expression"
 								}
 							}
@@ -195,6 +195,9 @@
 		"variables": {
 			"web_op": {
 				"type": "String"
+			},
+			"web_op_1": {
+				"type": "Array"
 			}
 		},
 		"folder": {

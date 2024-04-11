@@ -3,47 +3,11 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Lookup_races",
-				"type": "Lookup",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"dataset": {
-						"referenceName": "ds_races_sink",
-						"type": "DatasetReference",
-						"parameters": {
-							"year": {
-								"value": "@pipeline().parameters.year",
-								"type": "Expression"
-							}
-						}
-					}
-				}
-			},
-			{
 				"name": "ForEach_count_year",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Lookup_races",
+						"activity": "Web_races",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -52,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Lookup_races').output.firstRow.RaceTable.Races",
+						"value": "@activity('Web_races').output.MRData.RaceTable.Races",
 						"type": "Expression"
 					},
 					"batchCount": 4,
@@ -72,7 +36,7 @@
 							"typeProperties": {
 								"method": "GET",
 								"url": {
-									"value": "@concat('https://ergast.com/api/f1/', item().season, '/', item().round, 'results.json')",
+									"value": "@concat('https://ergast.com/api/f1/', item().season, '/', item().round, '/','results.json')",
 									"type": "Expression"
 								}
 							}
@@ -96,7 +60,7 @@
 							"typeProperties": {
 								"variableName": "web_op",
 								"value": {
-									"value": "@{activity('Web_results_data').output.MRData}",
+									"value": "@{activity('Web_results_data').output}",
 									"type": "Expression"
 								}
 							}
@@ -162,7 +126,7 @@
 												"type": "String"
 											},
 											"sink": {
-												"name": "Column2",
+												"name": "Column1",
 												"type": "String",
 												"physicalType": "String"
 											}
@@ -200,6 +164,26 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Web_races",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": {
+						"value": "@concat('https://ergast.com/api/f1/', pipeline().parameters.year, '.json')",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -213,6 +197,9 @@
 			},
 			"web_op": {
 				"type": "String"
+			},
+			"web_op_1": {
+				"type": "Array"
 			}
 		},
 		"folder": {
