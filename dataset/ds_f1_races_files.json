@@ -1,5 +1,5 @@
 {
-	"name": "ds_f1_files",
+	"name": "ds_f1_races_files",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_datalake_storage_bwtpractice",
@@ -9,6 +9,9 @@
 			"year": {
 				"type": "string"
 			}
+		},
+		"folder": {
+			"name": "f1_datasets"
 		},
 		"annotations": [],
 		"type": "Json",
