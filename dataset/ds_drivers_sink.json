@@ -1,0 +1,20 @@
+{
+	"name": "ds_drivers_sink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_bwtpractice_data_lake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "drivers.json",
+				"folderPath": "Eargst/drivers",
+				"fileSystem": "bronze"
+			}
+		},
+		"schema": {}
+	}
+}

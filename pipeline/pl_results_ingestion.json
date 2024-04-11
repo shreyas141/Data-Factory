@@ -1,43 +1,13 @@
 {
-	"name": "pl_races_data",
+	"name": "pl_results_ingestion",
 	"properties": {
 		"activities": [
 			{
-				"name": "Lookup",
-				"type": "Lookup",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "JsonSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "JsonReadSettings"
-						}
-					},
-					"dataset": {
-						"referenceName": "ds_seasons_sink",
-						"type": "DatasetReference"
-					}
-				}
-			},
-			{
-				"name": "ForEach_year",
+				"name": "ForEach_count_year",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Lookup",
+						"activity": "Web_races",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -46,17 +16,61 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Lookup').output.firstRow.MRData.SeasonTable.Seasons",
+						"value": "@activity('Web_races').output.MRData.RaceTable.Races",
 						"type": "Expression"
 					},
-					"batchCount": 3,
+					"batchCount": 4,
 					"activities": [
 						{
-							"name": "Copy_races_data",
+							"name": "Web_results_data",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "GET",
+								"url": {
+									"value": "@concat('https://ergast.com/api/f1/', item().season, '/', item().round, '/','results.json')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "web_act_op_variable",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Web_results_data",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "web_op",
+								"value": {
+									"value": "@{activity('Web_results_data').output}",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Copy_results_data",
 							"type": "Copy",
 							"dependsOn": [
 								{
-									"activity": "Set_web_act_output_variable",
+									"activity": "web_act_op_variable",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -112,9 +126,9 @@
 												"type": "String"
 											},
 											"sink": {
+												"name": "Column1",
 												"type": "String",
-												"physicalType": "String",
-												"ordinal": 1
+												"physicalType": "String"
 											}
 										}
 									],
@@ -133,66 +147,54 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "ds_races_sink",
+									"referenceName": "ds_results_sink",
 									"type": "DatasetReference",
 									"parameters": {
 										"year": {
 											"value": "@item().season",
 											"type": "Expression"
+										},
+										"round": {
+											"value": "@item().round",
+											"type": "Expression"
 										}
 									}
 								}
 							]
-						},
-						{
-							"name": "Web_races_data",
-							"type": "WebActivity",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"method": "GET",
-								"url": {
-									"value": "@concat('https://ergast.com/api/f1/', item().season, '.json')",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Set_web_act_output_variable",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Web_races_data",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "web_op",
-								"value": {
-									"value": "@{activity('Web_races_data').output}",
-									"type": "Expression"
-								}
-							}
 						}
 					]
 				}
+			},
+			{
+				"name": "Web_races",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": {
+						"value": "@concat('https://ergast.com/api/f1/', pipeline().parameters.year, '.json')",
+						"type": "Expression"
+					}
+				}
 			}
 		],
+		"parameters": {
+			"year": {
+				"type": "string"
+			}
+		},
 		"variables": {
+			"season_lst": {
+				"type": "Array"
+			},
 			"web_op": {
 				"type": "String"
 			},
