@@ -1,0 +1,29 @@
+{
+	"name": "ds_results_http",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_eargst_api_seasons",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"year": {
+				"type": "String"
+			},
+			"count": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": {
+					"value": "@concat()",
+					"type": "Expression"
+				}
+			}
+		},
+		"schema": {}
+	}
+}
