@@ -95,9 +95,9 @@
 									"type": "DelimitedTextSource",
 									"additionalColumns": [
 										{
-											"name": "my_column",
+											"name": "clm",
 											"value": {
-												"value": "@variables('web_op')",
+												"value": "@variables('output')",
 												"type": "Expression"
 											}
 										}
@@ -114,7 +114,8 @@
 								"sink": {
 									"type": "DelimitedTextSink",
 									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings"
+										"type": "AzureBlobFSWriteSettings",
+										"copyBehavior": "FlattenHierarchy"
 									},
 									"formatSettings": {
 										"type": "DelimitedTextWriteSettings",
@@ -125,6 +126,19 @@
 								"enableStaging": false,
 								"translator": {
 									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "my_column",
+												"type": "String"
+											},
+											"sink": {
+												"name": "my_column",
+												"type": "String",
+												"physicalType": "String"
+											}
+										}
+									],
 									"typeConversion": true,
 									"typeConversionSettings": {
 										"allowDataTruncation": true,
@@ -168,9 +182,9 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "web_op",
+								"variableName": "output",
 								"value": {
-									"value": "@{activity('Web_races').output}",
+									"value": "@{activity('Web_races').output.MRData}",
 									"type": "Expression"
 								}
 							}
@@ -181,6 +195,9 @@
 		],
 		"variables": {
 			"web_op": {
+				"type": "String"
+			},
+			"output": {
 				"type": "String"
 			}
 		},
