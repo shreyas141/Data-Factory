@@ -71,14 +71,7 @@
 			{
 				"name": "Lookup_seasons_data",
 				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "Copy_api_data",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -195,7 +188,7 @@
 						"referenceName": "ds_season_file",
 						"type": "DatasetReference"
 					},
-					"timeout": "0.00:01:00",
+					"timeout": "0.00:00:10",
 					"sleep": 10
 				}
 			}

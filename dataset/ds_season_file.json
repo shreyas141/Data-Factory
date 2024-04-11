@@ -14,7 +14,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "seasons.json",
-				"folderPath": "Eargst/seasons/api/f1",
+				"folderPath": "Eargst/seasons",
 				"fileSystem": "bronze"
 			}
 		},
