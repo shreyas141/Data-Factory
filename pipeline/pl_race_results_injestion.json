@@ -1,9 +1,9 @@
 {
-	"name": "pl_f1_races_injestion",
+	"name": "pl_race_results_injestion",
 	"properties": {
 		"activities": [
 			{
-				"name": "Lookup_seasons_data",
+				"name": "Lookup_seasons",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
@@ -13,37 +13,14 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "JsonSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "JsonReadSettings"
-						}
-					},
-					"dataset": {
-						"referenceName": "ds_season_file",
-						"type": "DatasetReference",
-						"parameters": {
-							"dataset": {
-								"value": "@pipeline().parameters.datset_name",
-								"type": "Expression"
-							}
-						}
-					}
-				}
+				"userProperties": []
 			},
 			{
-				"name": "ForEach_year",
+				"name": "ForEach",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Lookup_seasons_data",
+						"activity": "Lookup_seasons",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -52,13 +29,12 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Lookup_seasons_data').output.firstRow.MRData.SeasonTable.Seasons",
+						"value": "@activity('Lookup_seasons').output.MRData.SeasonTable",
 						"type": "Expression"
 					},
-					"isSequential": true,
 					"activities": [
 						{
-							"name": "Copy_data_as_per_year",
+							"name": "Copy_race_results",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -71,13 +47,13 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "DelimitedTextSource",
+									"type": "JsonSource",
 									"storeSettings": {
 										"type": "HttpReadSettings",
 										"requestMethod": "GET"
 									},
 									"formatSettings": {
-										"type": "DelimitedTextReadSettings"
+										"type": "JsonReadSettings"
 									}
 								},
 								"sink": {
@@ -93,19 +69,13 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "ds_http_ergast_races",
-									"type": "DatasetReference",
-									"parameters": {
-										"year": {
-											"value": "@item().season",
-											"type": "Expression"
-										}
-									}
+									"referenceName": "ds_http_races_results",
+									"type": "DatasetReference"
 								}
 							],
 							"outputs": [
 								{
-									"referenceName": "ds_f1_races_files",
+									"referenceName": "ds_race_results_files",
 									"type": "DatasetReference",
 									"parameters": {
 										"year": {
@@ -120,11 +90,6 @@
 				}
 			}
 		],
-		"parameters": {
-			"datset_name": {
-				"type": "string"
-			}
-		},
 		"folder": {
 			"name": "formula1_project"
 		},

@@ -1,12 +1,12 @@
 {
-	"name": "ds_http_ergast_seasons",
+	"name": "ds_http_races_results",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_http_eargast_seasons",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"dataset": {
+			"year": {
 				"type": "String"
 			}
 		},
@@ -19,7 +19,7 @@
 			"location": {
 				"type": "HttpServerLocation",
 				"relativeUrl": {
-					"value": "@concat('api/f1/', dataset().dataset, '.json', '?limit=100')",
+					"value": "@concat('api/f1/', dataset().year, '/results')",
 					"type": "Expression"
 				}
 			}
