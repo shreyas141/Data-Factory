@@ -5,9 +5,14 @@
 			{
 				"name": "Copy_api_data",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Validation",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -40,7 +45,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "ds_seasons",
+						"referenceName": "ds_http_ergast_seasons",
 						"type": "DatasetReference",
 						"parameters": {
 							"dataset": {
@@ -66,7 +71,14 @@
 			{
 				"name": "Lookup_seasons_data",
 				"type": "Lookup",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Copy_api_data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -147,7 +159,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "ds_http_f1",
+									"referenceName": "ds_http_ergast_races",
 									"type": "DatasetReference",
 									"parameters": {
 										"year": {
@@ -171,6 +183,20 @@
 							]
 						}
 					]
+				}
+			},
+			{
+				"name": "Validation",
+				"type": "Validation",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_season_file",
+						"type": "DatasetReference"
+					},
+					"timeout": "0.00:01:00",
+					"sleep": 10
 				}
 			}
 		],

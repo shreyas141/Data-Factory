@@ -18,6 +18,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@concat(dataset().dataset_name, '.json')",
+					"type": "Expression"
+				},
 				"folderPath": {
 					"value": "@concat('Eargst/',dataset().dataset_name)",
 					"type": "Expression"

@@ -1,5 +1,5 @@
 {
-	"name": "ds_http_f1",
+	"name": "ds_http_ergast_races",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_f1",
@@ -9,6 +9,9 @@
 			"year": {
 				"type": "string"
 			}
+		},
+		"folder": {
+			"name": "f1_datasets"
 		},
 		"annotations": [],
 		"type": "DelimitedText",

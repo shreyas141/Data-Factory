@@ -1,5 +1,5 @@
 {
-	"name": "ds_seasons",
+	"name": "ds_http_ergast_seasons",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_http_eargast_seasons",
@@ -9,6 +9,9 @@
 			"dataset": {
 				"type": "String"
 			}
+		},
+		"folder": {
+			"name": "f1_datasets"
 		},
 		"annotations": [],
 		"type": "Json",
