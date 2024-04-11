@@ -55,79 +55,80 @@
 						"value": "@activity('Lookup_seasons_data').output.firstRow.MRData.SeasonTable.Seasons",
 						"type": "Expression"
 					},
+					"isSequential": true,
 					"activities": [
 						{
 							"name": "check_year",
 							"type": "IfCondition",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
 									"value": "@less(int(item().season), 1976)",
 									"type": "Expression"
-								},
-								"ifTrueActivities": [
-									{
-										"name": "Copy_data_as_per_year",
-										"type": "Copy",
-										"dependsOn": [],
-										"policy": {
-											"timeout": "0.12:00:00",
-											"retry": 0,
-											"retryIntervalInSeconds": 30,
-											"secureOutput": false,
-											"secureInput": false
-										},
-										"userProperties": [],
-										"typeProperties": {
-											"source": {
-												"type": "DelimitedTextSource",
-												"storeSettings": {
-													"type": "HttpReadSettings",
-													"requestMethod": "GET"
-												},
-												"formatSettings": {
-													"type": "DelimitedTextReadSettings"
-												}
-											},
-											"sink": {
-												"type": "JsonSink",
-												"storeSettings": {
-													"type": "AzureBlobFSWriteSettings"
-												},
-												"formatSettings": {
-													"type": "JsonWriteSettings"
-												}
-											},
-											"enableStaging": false
-										},
-										"inputs": [
-											{
-												"referenceName": "ds_http_ergast_races",
-												"type": "DatasetReference",
-												"parameters": {
-													"year": {
-														"value": "@item().season",
-														"type": "Expression"
-													}
-												}
-											}
-										],
-										"outputs": [
-											{
-												"referenceName": "ds_f1_races_files",
-												"type": "DatasetReference",
-												"parameters": {
-													"year": {
-														"value": "@item().season",
-														"type": "Expression"
-													}
-												}
-											}
-										]
-									}
-								]
+								}
 							}
+						},
+						{
+							"name": "Copy_data_as_per_year",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "JsonSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_http_ergast_races",
+									"type": "DatasetReference",
+									"parameters": {
+										"year": {
+											"value": "@item().season",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_f1_races_files",
+									"type": "DatasetReference",
+									"parameters": {
+										"year": {
+											"value": "@item().season",
+											"type": "Expression"
+										}
+									}
+								}
+							]
 						}
 					]
 				}
