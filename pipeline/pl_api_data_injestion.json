@@ -63,7 +63,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@less(int(item()), 1976)",
+									"value": "@less(int(item().season), 1976)",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [

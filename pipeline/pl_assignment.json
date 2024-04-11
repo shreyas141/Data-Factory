@@ -174,7 +174,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "ds_f1_files",
+									"referenceName": "ds_f1_races_files",
 									"type": "DatasetReference",
 									"parameters": {
 										"year": {
