@@ -5,6 +5,8 @@
 			{
 				"name": "Copy season",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Validation",
@@ -59,6 +61,8 @@
 			{
 				"name": "Lookup_season_file",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Copy season",
@@ -96,6 +100,8 @@
 			{
 				"name": "ForEach",
 				"type": "ForEach",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Lookup_season_file",
@@ -185,6 +191,8 @@
 			{
 				"name": "Validation",
 				"type": "Validation",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Failed",
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
