@@ -5,6 +5,11 @@
 			"referenceName": "ls_datalake_storage_bwtpractice",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"dataset": {
+				"type": "String"
+			}
+		},
 		"folder": {
 			"name": "f1_datasets"
 		},
@@ -13,7 +18,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "seasons.json",
+				"fileName": {
+					"value": "@concat(dataset().dataset, '.json')",
+					"type": "Expression"
+				},
 				"folderPath": "Eargst/seasons",
 				"fileSystem": "bronze"
 			}
