@@ -58,20 +58,6 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "check_year",
-							"type": "IfCondition",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"expression": {
-									"value": "@less(int(item().season), 1976)",
-									"type": "Expression"
-								}
-							}
-						},
-						{
 							"name": "Copy_data_as_per_year",
 							"type": "Copy",
 							"dependsOn": [],
