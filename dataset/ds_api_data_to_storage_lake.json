@@ -1,25 +1,27 @@
 {
-	"name": "ds_f1_files",
+	"name": "ds_api_data_to_storage_lake",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_datalake_storage_bwtpractice",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"year": {
-				"type": "string"
+			"dataset_name": {
+				"type": "String"
 			}
+		},
+		"folder": {
+			"name": "f1_datasets"
 		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": {
-					"value": "@concat(dataset().year, '.json')",
+				"folderPath": {
+					"value": "@concat('Eargst/',dataset().dataset_name)",
 					"type": "Expression"
 				},
-				"folderPath": "Eargst/races/f1",
 				"fileSystem": "bronze"
 			}
 		},

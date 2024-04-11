@@ -5,12 +5,20 @@
 			"referenceName": "ls_http_eargast_seasons",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"dataset": {
+				"type": "String"
+			}
+		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
 			"location": {
 				"type": "HttpServerLocation",
-				"relativeUrl": "api/f1/seasons.json"
+				"relativeUrl": {
+					"value": "@concat('api/f1/', dataset().dataset, '.json')",
+					"type": "Expression"
+				}
 			}
 		},
 		"schema": {}
