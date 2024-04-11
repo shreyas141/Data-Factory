@@ -1,0 +1,38 @@
+{
+	"name": "ds_results_sink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_bwtpractice_data_lake",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"year": {
+				"type": "String"
+			},
+			"round": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@concat(dataset().round, '_round_results.json')",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@concat('Eargst/results/', dataset().year)",
+					"type": "Expression"
+				},
+				"fileSystem": "bronze"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "",
+			"firstRowAsHeader": true,
+			"quoteChar": ""
+		},
+		"schema": []
+	}
+}
