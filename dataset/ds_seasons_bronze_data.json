@@ -1,0 +1,21 @@
+{
+	"name": "ds_seasons_bronze_data",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_http_eargast_seasons",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "f1_datasets"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": "api/f1/seasons.json"
+			}
+		},
+		"schema": {}
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"name": "pl_api_data_injestion",
+	"properties": {
+		"folder": {
+			"name": "formula1_project"
+		},
+		"annotations": []
+	}
+}
