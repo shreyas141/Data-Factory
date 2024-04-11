@@ -49,6 +49,7 @@
 						"value": "@activity('Lookup').output.firstRow.MRData.SeasonTable.Seasons",
 						"type": "Expression"
 					},
+					"isSequential": false,
 					"activities": [
 						{
 							"name": "Web_races",
@@ -94,9 +95,9 @@
 									"type": "DelimitedTextSource",
 									"additionalColumns": [
 										{
-											"name": "api",
+											"name": "my_column",
 											"value": {
-												"value": "@{variables('web_op')}",
+												"value": "@variables('web_op')",
 												"type": "Expression"
 											}
 										}
@@ -111,15 +112,25 @@
 									}
 								},
 								"sink": {
-									"type": "JsonSink",
+									"type": "DelimitedTextSink",
 									"storeSettings": {
 										"type": "AzureBlobFSWriteSettings"
 									},
 									"formatSettings": {
-										"type": "JsonWriteSettings"
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
 									}
 								},
-								"enableStaging": false
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
 							},
 							"inputs": [
 								{
@@ -129,7 +140,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "ds_schedule_races_sink",
+									"referenceName": "ds_races_sink",
 									"type": "DatasetReference",
 									"parameters": {
 										"year": {
