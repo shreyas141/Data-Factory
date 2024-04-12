@@ -19,7 +19,7 @@
 						"value": "@activity('Web_races').output.MRData.RaceTable.Races",
 						"type": "Expression"
 					},
-					"batchCount": 4,
+					"batchCount": 15,
 					"activities": [
 						{
 							"name": "Web_results_data",
@@ -126,9 +126,9 @@
 												"type": "String"
 											},
 											"sink": {
-												"name": "Column1",
 												"type": "String",
-												"physicalType": "String"
+												"physicalType": "String",
+												"ordinal": 1
 											}
 										}
 									],
@@ -179,18 +179,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "GET",
-					"url": {
-						"value": "@concat('https://ergast.com/api/f1/', pipeline().parameters.year, '.json')",
-						"type": "Expression"
-					}
+					"url": "http://ergast.com/api/f1/races.json?limit=1000"
 				}
 			}
 		],
-		"parameters": {
-			"year": {
-				"type": "string"
-			}
-		},
 		"variables": {
 			"season_lst": {
 				"type": "Array"

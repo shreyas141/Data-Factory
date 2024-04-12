@@ -19,18 +19,18 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "@concat(dataset().round, '_round_results.json')",
+					"value": "@concat(dataset().year,'_',dataset().round, '_results.json')",
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "@concat('Eargst/results/', dataset().year)",
+					"value": "Eargst/results/",
 					"type": "Expression"
 				},
 				"fileSystem": "bronze"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "",
-			"firstRowAsHeader": true,
+			"firstRowAsHeader": false,
 			"quoteChar": ""
 		},
 		"schema": []
