@@ -1,0 +1,48 @@
+{
+	"name": "ds_f1db_files_sink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_bwtpractice_data_lake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "bronze"
+			},
+			"columnDelimiter": ",",
+			"compressionCodec": "ZipDeflate",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "841",
+				"type": "String"
+			},
+			{
+				"name": "20",
+				"type": "String"
+			},
+			{
+				"name": "12",
+				"type": "String"
+			},
+			{
+				"name": "13",
+				"type": "String"
+			},
+			{
+				"name": "1:38.109",
+				"type": "String"
+			},
+			{
+				"name": "98109",
+				"type": "String"
+			}
+		]
+	}
+}
