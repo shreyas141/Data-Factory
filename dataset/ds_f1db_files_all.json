@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"folderPath": "downloads/files/f1db",
+				"folderPath": "downloads/f1db",
 				"fileSystem": "bronze"
 			},
 			"columnDelimiter": ",",
