@@ -1,0 +1,41 @@
+{
+	"name": "ds_race_results_raw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_datalake_storage_gen2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"season": {
+				"type": "String"
+			},
+			"round": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "raw"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@concat('round_',dataset().round, '.json')",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@concat('race_results/', dataset().season)",
+					"type": "Expression"
+				},
+				"fileSystem": "bronze"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": false,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

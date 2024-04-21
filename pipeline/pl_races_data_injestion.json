@@ -127,7 +127,13 @@
 							"outputs": [
 								{
 									"referenceName": "ds_races_raw",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"season": {
+											"value": "@item().season",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						},

@@ -19,7 +19,7 @@
 						"value": "@activity('Web_races').output.MRData.RaceTable.Races",
 						"type": "Expression"
 					},
-					"batchCount": 15,
+					"batchCount": 20,
 					"activities": [
 						{
 							"name": "Web_results_data",
@@ -147,7 +147,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "ds_races_raw",
+									"referenceName": "ds_race_results_raw",
 									"type": "DatasetReference",
 									"parameters": {
 										"season": {
