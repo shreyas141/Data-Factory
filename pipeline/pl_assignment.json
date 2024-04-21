@@ -44,13 +44,7 @@
 						}
 					},
 					"enableStaging": false
-				},
-				"outputs": [
-					{
-						"referenceName": "ds_bwtpractice_g2",
-						"type": "DatasetReference"
-					}
-				]
+				}
 			},
 			{
 				"name": "Lookup_season_file",
@@ -84,10 +78,6 @@
 						"formatSettings": {
 							"type": "JsonReadSettings"
 						}
-					},
-					"dataset": {
-						"referenceName": "ds_seasons_data",
-						"type": "DatasetReference"
 					}
 				}
 			},
@@ -166,10 +156,6 @@
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
-					"dataset": {
-						"referenceName": "ds_bwtpractice_g2",
-						"type": "DatasetReference"
-					},
 					"timeout": "0.00:00:10",
 					"sleep": 10
 				}

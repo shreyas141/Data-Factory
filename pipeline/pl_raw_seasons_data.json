@@ -1,11 +1,18 @@
 {
-	"name": "pl_seasons_data",
+	"name": "pl_raw_seasons_data",
 	"properties": {
 		"activities": [
 			{
 				"name": "Copy_seasons_from_api_to_delta_lake",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Validation_seasons_file",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -25,6 +32,15 @@
 							"type": "JsonReadSettings"
 						}
 					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
 					"enableStaging": false
 				},
 				"inputs": [
@@ -32,11 +48,31 @@
 						"referenceName": "ds_seasons_http",
 						"type": "DatasetReference"
 					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_seasons_raw",
+						"type": "DatasetReference"
+					}
 				]
+			},
+			{
+				"name": "Validation_seasons_file",
+				"type": "Validation",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_seasons_raw",
+						"type": "DatasetReference"
+					},
+					"timeout": "0.00:00:10",
+					"sleep": 1
+				}
 			}
 		],
 		"folder": {
-			"name": "project formula 1"
+			"name": "project formula 1/raw"
 		},
 		"annotations": []
 	}
