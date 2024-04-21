@@ -1,5 +1,5 @@
 {
-	"name": "pl_races_data",
+	"name": "pl_races_data_injestion",
 	"properties": {
 		"activities": [
 			{
@@ -25,10 +25,6 @@
 						"formatSettings": {
 							"type": "JsonReadSettings"
 						}
-					},
-					"dataset": {
-						"referenceName": "ds_seasons_sink",
-						"type": "DatasetReference"
 					}
 				}
 			},
@@ -102,47 +98,8 @@
 										"fileExtension": ".txt"
 									}
 								},
-								"enableStaging": false,
-								"translator": {
-									"type": "TabularTranslator",
-									"mappings": [
-										{
-											"source": {
-												"name": "my_column",
-												"type": "String"
-											},
-											"sink": {
-												"type": "String",
-												"physicalType": "String",
-												"ordinal": 1
-											}
-										}
-									],
-									"typeConversion": true,
-									"typeConversionSettings": {
-										"allowDataTruncation": true,
-										"treatBooleanAsNumber": false
-									}
-								}
-							},
-							"inputs": [
-								{
-									"referenceName": "ds_temprarory_file",
-									"type": "DatasetReference"
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "ds_races_sink",
-									"type": "DatasetReference",
-									"parameters": {
-										"year": {
-											"value": "@item().season",
-											"type": "Expression"
-										}
-									}
-								}
-							]
+								"enableStaging": false
+							}
 						},
 						{
 							"name": "Web_races_data",
