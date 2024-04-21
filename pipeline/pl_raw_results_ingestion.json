@@ -1,5 +1,5 @@
 {
-	"name": "pl_results_ingestion",
+	"name": "pl_raw_results_ingestion",
 	"properties": {
 		"activities": [
 			{
@@ -58,7 +58,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "web_op",
+								"variableName": "web_op_results",
 								"value": {
 									"value": "@{activity('Web_results_data').output}",
 									"type": "Expression"
@@ -89,9 +89,9 @@
 									"type": "DelimitedTextSource",
 									"additionalColumns": [
 										{
-											"name": "my_clm",
+											"name": "my_clolumn",
 											"value": {
-												"value": "@variables('web_op')",
+												"value": "@variables('web_op_results')",
 												"type": "Expression"
 											}
 										}
@@ -122,7 +122,7 @@
 									"mappings": [
 										{
 											"source": {
-												"name": "my_clm",
+												"name": "my_clolumn",
 												"type": "String"
 											},
 											"sink": {
@@ -152,6 +152,10 @@
 									"parameters": {
 										"season": {
 											"value": "@item().season",
+											"type": "Expression"
+										},
+										"round": {
+											"value": "@item().round",
 											"type": "Expression"
 										}
 									}
@@ -188,10 +192,13 @@
 			},
 			"web_op_1": {
 				"type": "Array"
+			},
+			"web_op_results": {
+				"type": "String"
 			}
 		},
 		"folder": {
-			"name": "project formula 1"
+			"name": "project formula 1/raw"
 		},
 		"annotations": []
 	}

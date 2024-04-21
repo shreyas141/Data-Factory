@@ -1,5 +1,5 @@
 {
-	"name": "pl_races_data_injestion",
+	"name": "pl_raw_races_data_injestion",
 	"properties": {
 		"activities": [
 			{
@@ -194,7 +194,7 @@
 			}
 		},
 		"folder": {
-			"name": "project formula 1"
+			"name": "project formula 1/raw"
 		},
 		"annotations": []
 	}
