@@ -1,0 +1,9 @@
+{
+	"name": "formula-one-factory",
+	"location": "uksouth",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "f7890d00-3c53-4651-8f0a-24cd5f4e5163",
+		"tenantId": "4687134c-3d6c-46bb-8012-beb09464c12e"
+	}
+}
