@@ -25,6 +25,10 @@
 						"formatSettings": {
 							"type": "JsonReadSettings"
 						}
+					},
+					"dataset": {
+						"referenceName": "ds_seasons_raw",
+						"type": "DatasetReference"
 					}
 				}
 			},
@@ -68,7 +72,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "DelimitedTextSource",
+									"type": "JsonSource",
 									"additionalColumns": [
 										{
 											"name": "my_column",
@@ -79,12 +83,11 @@
 										}
 									],
 									"storeSettings": {
-										"type": "AzureBlobFSReadSettings",
-										"recursive": true,
-										"enablePartitionDiscovery": false
+										"type": "HttpReadSettings",
+										"requestMethod": "GET"
 									},
 									"formatSettings": {
-										"type": "DelimitedTextReadSettings"
+										"type": "JsonReadSettings"
 									}
 								},
 								"sink": {
@@ -98,8 +101,35 @@
 										"fileExtension": ".txt"
 									}
 								},
-								"enableStaging": false
-							}
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "my_column",
+												"type": "String"
+											},
+											"sink": {
+												"type": "String",
+												"ordinal": 1
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_seasons_http",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_races_raw",
+									"type": "DatasetReference"
+								}
+							]
 						},
 						{
 							"name": "Web_races_data",
