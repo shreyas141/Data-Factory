@@ -1,0 +1,29 @@
+{
+	"name": "ds_sql_database",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sql_server_shreyas141",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "trigger_date",
+				"type": "varchar"
+			},
+			{
+				"name": "act_name",
+				"type": "varchar"
+			},
+			{
+				"name": "status",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "formula_1_logs",
+			"table": "logs"
+		}
+	}
+}

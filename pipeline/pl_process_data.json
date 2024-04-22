@@ -1,0 +1,116 @@
+{
+	"name": "pl_process_data",
+	"properties": {
+		"activities": [
+			{
+				"name": "process_results",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/formula_1_project/ingestion/results_ingestion"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_workspace",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "process_races",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/formula_1_project/ingestion/race_ingestion"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_workspace",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "process_drivers",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/formula_1_project/ingestion/drivers_ingestion"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_workspace",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "process_constructors",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/formula_1_project/ingestion/constructor_data_ingestion"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_workspace",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "process_circuits",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/formula_1_project/ingestion/circuits_data_ingestion"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_workspace",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"date": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "project formula 1/processes"
+		},
+		"annotations": []
+	}
+}

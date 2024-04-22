@@ -5,7 +5,14 @@
 			{
 				"name": "Web_races",
 				"type": "WebActivity",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Validation",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -75,20 +82,59 @@
 							"inputs": [
 								{
 									"referenceName": "ds_qualifying_raw_http",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"season": {
+											"value": "@item().season",
+											"type": "Expression"
+										},
+										"round": {
+											"value": "@item().round",
+											"type": "Expression"
+										}
+									}
 								}
 							],
 							"outputs": [
 								{
 									"referenceName": "ds_raw_qualifying",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"season": {
+											"value": "@item().season",
+											"type": "Expression"
+										},
+										"round": {
+											"value": "@item().round",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
 					]
 				}
+			},
+			{
+				"name": "Validation",
+				"type": "Validation",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_raw_results_validation",
+						"type": "DatasetReference"
+					},
+					"timeout": "0.00:01:00",
+					"sleep": 10
+				}
 			}
 		],
+		"variables": {
+			"date": {
+				"type": "String"
+			}
+		},
 		"folder": {
 			"name": "project formula 1/raw"
 		},

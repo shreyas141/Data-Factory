@@ -22,11 +22,11 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "@concat(dataset().season,'_round_',dataset().round, '.json')",
+					"value": "@concat(dataset().round, '.json')",
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "race_results",
+					"value": "@concat(formatDateTime(utcnow(), 'yyyyMMdd'), '/', dataset().season)",
 					"type": "Expression"
 				},
 				"fileSystem": "bronze"
