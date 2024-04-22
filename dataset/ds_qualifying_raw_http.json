@@ -1,0 +1,29 @@
+{
+	"name": "ds_qualifying_raw_http",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_http_eargast_seasons",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"season": {
+				"type": "String"
+			},
+			"round": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": {
+					"value": "@concat('api/f1/', dataset().season, '/', dataset().round, '/', 'qualifying.json')",
+					"type": "Expression"
+				}
+			}
+		},
+		"schema": {}
+	}
+}
