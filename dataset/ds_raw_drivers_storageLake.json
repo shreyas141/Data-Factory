@@ -1,0 +1,20 @@
+{
+	"name": "ds_raw_drivers_storageLake",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_datalake_storage_gen2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "drivers.json",
+				"folderPath": "Drivers",
+				"fileSystem": "bronze"
+			}
+		},
+		"schema": {}
+	}
+}
