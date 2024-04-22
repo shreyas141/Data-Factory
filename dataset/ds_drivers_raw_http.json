@@ -1,5 +1,5 @@
 {
-	"name": "ds_drivers_raw",
+	"name": "ds_drivers_raw_http",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_http_eargast_seasons",
