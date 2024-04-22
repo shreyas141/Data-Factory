@@ -22,8 +22,8 @@
 					"batchCount": 20,
 					"activities": [
 						{
-							"name": "Web_results_data",
-							"type": "WebActivity",
+							"name": "copy_results",
+							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
@@ -34,75 +34,14 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"method": "GET",
-								"url": {
-									"value": "@concat('https://ergast.com/api/f1/', item().season, '/', item().round, '/','results.json')",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "web_act_op_variable",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Web_results_data",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "web_op_results",
-								"value": {
-									"value": "@{activity('Web_results_data').output}",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Copy_results_data",
-							"type": "Copy",
-							"dependsOn": [
-								{
-									"activity": "web_act_op_variable",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
 								"source": {
-									"type": "DelimitedTextSource",
-									"additionalColumns": [
-										{
-											"name": "my_clolumn",
-											"value": {
-												"value": "@variables('web_op_results')",
-												"type": "Expression"
-											}
-										}
-									],
+									"type": "JsonSource",
 									"storeSettings": {
-										"type": "AzureBlobFSReadSettings",
-										"recursive": true,
-										"enablePartitionDiscovery": false
+										"type": "HttpReadSettings",
+										"requestMethod": "GET"
 									},
 									"formatSettings": {
-										"type": "DelimitedTextReadSettings"
+										"type": "JsonReadSettings"
 									}
 								},
 								"sink": {
@@ -116,33 +55,18 @@
 										"fileExtension": ".txt"
 									}
 								},
-								"enableStaging": false,
-								"translator": {
-									"type": "TabularTranslator",
-									"mappings": [
-										{
-											"source": {
-												"name": "my_clolumn",
-												"type": "String"
-											},
-											"sink": {
-												"type": "String",
-												"physicalType": "String",
-												"ordinal": 1
-											}
-										}
-									],
-									"typeConversion": true,
-									"typeConversionSettings": {
-										"allowDataTruncation": true,
-										"treatBooleanAsNumber": false
-									}
-								}
+								"enableStaging": false
 							},
 							"inputs": [
 								{
-									"referenceName": "ds_temp_raw",
-									"type": "DatasetReference"
+									"referenceName": "ds_races_http",
+									"type": "DatasetReference",
+									"parameters": {
+										"relative_url": {
+											"value": "@concat('api/f1/', item().season, '/', item().round, '/','results.json')",
+											"type": "Expression"
+										}
+									}
 								}
 							],
 							"outputs": [

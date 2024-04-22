@@ -1,0 +1,26 @@
+{
+	"name": "ds_races_http",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_http_eargast_seasons",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"relative_url": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": {
+					"value": "@dataset().relative_url",
+					"type": "Expression"
+				}
+			}
+		},
+		"schema": {}
+	}
+}
