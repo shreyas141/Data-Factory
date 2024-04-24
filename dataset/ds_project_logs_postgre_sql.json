@@ -1,5 +1,5 @@
 {
-	"name": "AzurePostgreSqlTable1",
+	"name": "ds_project_logs_postgre_sql",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_postgre_sql",

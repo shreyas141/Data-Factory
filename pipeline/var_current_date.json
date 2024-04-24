@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "var_current_date",
 	"properties": {
 		"activities": [
 			{
@@ -71,7 +71,7 @@
 						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "AzurePostgreSqlTable1",
+						"referenceName": "ds_project_logs_postgre_sql",
 						"type": "DatasetReference"
 					}
 				}
@@ -105,7 +105,7 @@
 						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "AzurePostgreSqlTable1",
+						"referenceName": "ds_project_logs_postgre_sql",
 						"type": "DatasetReference"
 					}
 				}
