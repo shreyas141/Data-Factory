@@ -5,9 +5,14 @@
 			{
 				"name": "Execute_process_pl",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "query_processing",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -59,6 +64,44 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzurePostgreSqlSource",
+						"query": {
+							"value": "INSERT INTO public.project_logs\n(job_id, job_name, task_name, status)\nVALUES('@{formatDateTime(variables('date'), 'yyyyMMddHHmmss')}', 'Execute_process_pl', 'Execute_Notebooks', 'Processing');\nSELECT * FROM public.project_logs;",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzurePostgreSqlTable1",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "query_succeed",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Execute_process_pl",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzurePostgreSqlSource",
+						"query": {
+							"value": "UPDATE public.project_logs\nSET status = 'Succeed'\nWHERE job_id = '@{variables('date'), 'yyyyMMddHHmmss'}';",
+							"type": "Expression"
+						},
 						"partitionOption": "None"
 					},
 					"dataset": {
