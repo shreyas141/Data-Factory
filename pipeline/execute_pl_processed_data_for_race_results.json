@@ -1,10 +1,12 @@
 {
-	"name": "pl_execute_db_notebooks",
+	"name": "execute_pl_processed_data_for_race_results",
 	"properties": {
 		"activities": [
 			{
 				"name": "query_processing",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set variable1",
@@ -39,6 +41,8 @@
 			{
 				"name": "query_succeed",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "pl_process_data",
@@ -73,6 +77,8 @@
 			{
 				"name": "pl_process_data",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "query_processing",
@@ -87,7 +93,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "pl_processed_race_results",
+						"referenceName": "pl_processed_data_for_race_results",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
@@ -96,6 +102,8 @@
 			{
 				"name": "Set variable1",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureOutput": false,
@@ -109,6 +117,61 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "For_itemName",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "file_list_var",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('file_name_list')",
+						"type": "Expression"
+					},
+					"batchCount": 2,
+					"activities": [
+						{
+							"name": "Validation1",
+							"type": "Validation",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_raw_validation",
+									"type": "DatasetReference",
+									"parameters": {
+										"item_name": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
+								},
+								"timeout": "0.12:00:00",
+								"sleep": 10
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "file_list_var",
+				"type": "AppendVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "file_name_list",
+					"value": {
+						"value": "['circuits', 'constructor', 'Drivers', 'races', 'results']",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"variables": {
@@ -117,6 +180,9 @@
 			},
 			"pl_window_date": {
 				"type": "String"
+			},
+			"file_name_list": {
+				"type": "Array"
 			}
 		},
 		"folder": {

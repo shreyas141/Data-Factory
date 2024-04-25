@@ -1,5 +1,5 @@
 {
-	"name": "pl_processed_race_results",
+	"name": "pl_processed_data_for_race_results",
 	"properties": {
 		"activities": [
 			{
@@ -106,6 +106,9 @@
 		"variables": {
 			"pl_window_date": {
 				"type": "String"
+			},
+			"file_name_list": {
+				"type": "Array"
 			}
 		},
 		"folder": {
