@@ -25,6 +25,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -81,6 +82,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -125,7 +127,7 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"file_name": {
-														"value": "@activity('Get Metadata2').output.itemName",
+														"value": "@activity('get_lastModifiedDate_and_itemName').output.itemName",
 														"type": "Expression"
 													}
 												}

@@ -10,6 +10,9 @@
 				"type": "String"
 			}
 		},
+		"folder": {
+			"name": "real_time_scenario_datasets"
+		},
 		"annotations": [],
 		"type": "Binary",
 		"typeProperties": {
