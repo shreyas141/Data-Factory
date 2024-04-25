@@ -1,9 +1,10 @@
 {
-	"name": "pipeline2",
+	"name": "pl_delete_30_days_old_file",
 	"properties": {
 		"activities": [
 			{
-				"name": "Get Metadata1",
+				"name": "get_folder_name",
+				"description": "In my case i have files inside a folder and those files having same name as folder name",
 				"type": "GetMetadata",
 				"dependsOn": [],
 				"policy": {
@@ -32,11 +33,12 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "for_each_childItem",
+				"description": "This act get the input of get meta data act and ittrets on that output",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Get Metadata1",
+						"activity": "get_folder_name",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -45,12 +47,13 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Get Metadata1').output.childItems",
+						"value": "@activity('get_folder_name').output.childItems",
 						"type": "Expression"
 					},
 					"activities": [
 						{
-							"name": "Get Metadata2",
+							"name": "get_lastModifiedDate_and_itemName",
+							"description": "This act get the lastModifiedDate of file and its name ",
 							"type": "GetMetadata",
 							"dependsOn": [],
 							"policy": {
@@ -86,11 +89,12 @@
 							}
 						},
 						{
-							"name": "If Condition1",
+							"name": "if_lastModifiedDate_is_30_days_before",
+							"description": "This act checks if the file is 30 days old or not if it is then act inside if condition act deletes that file",
 							"type": "IfCondition",
 							"dependsOn": [
 								{
-									"activity": "Get Metadata2",
+									"activity": "get_lastModifiedDate_and_itemName",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -99,12 +103,12 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@less(formatDateTime(adddays(utcnow(), -10), 'yyyy-MM-ddTHH:mm:ssZ'),activity('Get Metadata2').output.lastModified)",
+									"value": "@less(activity('get_lastModifiedDate_and_itemName').output.lastModified, formatDateTime(adddays(utcnow(), 1), 'yyyy-MM-ddTHH:mm:ssZ'))",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
 									{
-										"name": "Delete1",
+										"name": "delete_file",
 										"type": "Delete",
 										"dependsOn": [],
 										"policy": {
