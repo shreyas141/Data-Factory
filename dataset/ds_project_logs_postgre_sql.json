@@ -5,6 +5,9 @@
 			"referenceName": "ls_postgre_sql",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "sqlize"
+		},
 		"annotations": [],
 		"type": "AzurePostgreSqlTable",
 		"schema": [

@@ -10,6 +10,9 @@
 				"type": "String"
 			}
 		},
+		"folder": {
+			"name": "api"
+		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {

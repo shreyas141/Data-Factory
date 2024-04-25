@@ -5,6 +5,9 @@
 			"referenceName": "ls_sql_server_shreyas141",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "sqlize"
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [

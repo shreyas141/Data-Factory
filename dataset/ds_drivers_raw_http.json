@@ -5,6 +5,9 @@
 			"referenceName": "ls_http_eargast_seasons",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "api"
+		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {

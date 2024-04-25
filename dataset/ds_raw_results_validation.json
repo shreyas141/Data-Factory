@@ -5,6 +5,9 @@
 			"referenceName": "ls_datalake_storage_gen2",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "raw"
+		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
