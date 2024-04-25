@@ -25,7 +25,7 @@
 					"source": {
 						"type": "AzurePostgreSqlSource",
 						"query": {
-							"value": "INSERT INTO public.project_logs\n(job_id, job_name, task_name, status)\nVALUES('@{formatDateTime(variables('pl_window_date'), 'yyyyMMddHHmmss')}', 'Execute_process_pl', 'Execute_Notebooks', 'Processing');\nSELECT * FROM public.project_logs;",
+							"value": "INSERT INTO public.project_logs\n(job_id, job_name, task_name, status)\nVALUES('@{formatDateTime(variables('pl_window_date'), 'yyyyMMddHHmmss')}', 'Execute_process_pl', 'pl_process_race_results', 'Processing');\nSELECT * FROM public.project_logs;",
 							"type": "Expression"
 						},
 						"partitionOption": "None"
@@ -87,7 +87,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "pl_process_data",
+						"referenceName": "pl_processed_race_results",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
