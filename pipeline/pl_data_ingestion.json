@@ -67,9 +67,11 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"fieldList": [
-						"exists"
-					],
+					"dataset": {
+						"referenceName": "ds_for_realtime_scenarios_adlsgentwo",
+						"type": "DatasetReference"
+					},
+					"fieldList": [],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
 						"recursive": true,
