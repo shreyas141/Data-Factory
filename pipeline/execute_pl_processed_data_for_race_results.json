@@ -5,8 +5,6 @@
 			{
 				"name": "query_processing",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set variable1",
@@ -41,8 +39,6 @@
 			{
 				"name": "query_succeed",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "pl_process_data",
@@ -77,8 +73,6 @@
 			{
 				"name": "pl_process_data",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "query_processing",
@@ -102,8 +96,6 @@
 			{
 				"name": "Set variable1",
 				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureOutput": false,
@@ -114,61 +106,6 @@
 					"variableName": "pl_window_date",
 					"value": {
 						"value": "@utcnow()",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "For_itemName",
-				"type": "ForEach",
-				"dependsOn": [
-					{
-						"activity": "file_list_var",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"items": {
-						"value": "@variables('file_name_list')",
-						"type": "Expression"
-					},
-					"batchCount": 2,
-					"activities": [
-						{
-							"name": "Validation1",
-							"type": "Validation",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"dataset": {
-									"referenceName": "ds_raw_validation",
-									"type": "DatasetReference",
-									"parameters": {
-										"item_name": {
-											"value": "@item()",
-											"type": "Expression"
-										}
-									}
-								},
-								"timeout": "0.12:00:00",
-								"sleep": 10
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "file_list_var",
-				"type": "AppendVariable",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "file_name_list",
-					"value": {
-						"value": "['circuits', 'constructor', 'Drivers', 'races', 'results']",
 						"type": "Expression"
 					}
 				}
