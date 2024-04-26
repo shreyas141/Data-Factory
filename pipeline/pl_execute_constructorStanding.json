@@ -1,0 +1,124 @@
+{
+	"name": "pl_execute_constructorStanding",
+	"properties": {
+		"activities": [
+			{
+				"name": "current_date",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pl_window_current_date",
+					"value": {
+						"value": "@utcnow()",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "querry_processing",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "current_date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzurePostgreSqlSource",
+						"query": {
+							"value": "INSERT INTO public.project_logs\n(job_id, job_name, task_name, status)\nVALUES('@{formatDateTime(variables('pl_window_current_date'), 'yyyyMMddHHmmss')}', 'pl_execute', 'pl_process_constructorStandings', 'Processing');\nSELECT * FROM public.project_logs;",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_project_logs_postgre_sql",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "pl_processed_constructor_standing",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "querry_processing",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_processed_constructor_standing",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "querry_succeed",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "pl_processed_constructor_standing",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzurePostgreSqlSource",
+						"query": {
+							"value": "update public.project_logs set status ='success' where job_id = '@{formatDateTime(variables('pl_window_current_date'),'yyyyMMddHHmmss')}';\n\nselect * from public.project_logs;",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_project_logs_postgre_sql",
+						"type": "DatasetReference"
+					}
+				}
+			}
+		],
+		"variables": {
+			"pl_window_current_date": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "project formula 1/Execute"
+		},
+		"annotations": []
+	}
+}
