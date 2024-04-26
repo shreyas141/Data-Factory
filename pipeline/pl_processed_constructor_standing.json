@@ -1,0 +1,31 @@
+{
+	"name": "pl_processed_constructor_standing",
+	"properties": {
+		"activities": [
+			{
+				"name": "constructor_standings",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/formula_1_project/trans/constructor_standings"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_workspace",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "project formula 1/processes"
+		},
+		"annotations": []
+	}
+}
